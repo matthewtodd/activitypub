@@ -32,7 +32,7 @@ resource "aws_lambda_function" "my_function" {
   runtime = "nodejs14.x"
   handler = "my_function.handler"
 
-  role = aws_iam_role.iam_for_lambda.arn
+  role = aws_iam_role.lambda_exec.arn
 }
 
 resource "aws_cloudwatch_log_group" "my_function" {
@@ -41,12 +41,12 @@ resource "aws_cloudwatch_log_group" "my_function" {
   retention_in_days = 3
 }
 
-resource "aws_iam_role" "iam_for_lambda" {
-  name               = "iam_for_lambda"
-  assume_role_policy = data.aws_iam_policy_document.my_policy.json
+resource "aws_iam_role" "lambda_exec" {
+  name               = "serverless_lambda"
+  assume_role_policy = data.aws_iam_policy_document.lambda_exec.json
 }
 
-data "aws_iam_policy_document" "my_policy" {
+data "aws_iam_policy_document" "lambda_exec" {
   statement {
     actions = ["sts:AssumeRole"]
     principals {
@@ -56,8 +56,8 @@ data "aws_iam_policy_document" "my_policy" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_logs" {
-  role       = aws_iam_role.iam_for_lambda.name
+resource "aws_iam_role_policy_attachment" "lambda_policy" {
+  role       = aws_iam_role.lambda_exec.name
   policy_arn = "arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole"
 }
 
