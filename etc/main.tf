@@ -4,6 +4,10 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 4.0"
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = "~> 2.2"
+    }
   }
 
   required_version = ">= 1.2.0"
@@ -13,11 +17,17 @@ provider "aws" {
   region = "us-east-1"
 }
 
+data "archive_file" "my_function" {
+  type        = "zip"
+  source_file = "${path.module}/../src/my_function.js"
+  output_path = "${path.module}/../src/my_function.zip"
+}
+
 resource "aws_lambda_function" "my_function" {
   function_name = "my_function"
 
-  filename         = "../src/my_function.zip"
-  source_code_hash = filebase64sha256("../src/my_function.zip")
+  filename         = data.archive_file.my_function.output_path
+  source_code_hash = data.archive_file.my_function.output_base64sha256
 
   runtime = "nodejs14.x"
   handler = "my_function.handler"
