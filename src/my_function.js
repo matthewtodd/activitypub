@@ -1,7 +1,11 @@
-exports.handler = async (_event) => {
-    const response = {
+module.exports.handler = async (_event) => {
+    return {
         statusCode: 200,
-        body: JSON.stringify('Hello from Lambda!'),
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            message: 'Hello from Lambda!',
+        }),
     };
-    return response;
 };
