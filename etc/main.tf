@@ -71,6 +71,8 @@ resource "aws_apigatewayv2_stage" "my_api" {
 
   name        = "my_api_stage"
   auto_deploy = true
+
+  // TODO access_log_settings?
 }
 
 resource "aws_apigatewayv2_integration" "my_function" {
